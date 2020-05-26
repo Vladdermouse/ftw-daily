@@ -113,6 +113,8 @@ export class ListingPageComponent extends Component {
       confirmPaymentError: null,
     };
 
+    console.log('initialValues', initialValues);
+
     const routes = routeConfiguration();
     // Customize checkout page state with current listing and selected bookingDates
     const { setInitialValues } = findRouteByRouteName('CheckoutPage', routes);

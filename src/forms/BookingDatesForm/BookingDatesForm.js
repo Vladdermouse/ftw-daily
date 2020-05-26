@@ -7,7 +7,12 @@ import classNames from 'classnames';
 import moment from 'moment';
 import { required, bookingDatesRequired, composeValidators } from '../../util/validators';
 import { START_DATE, END_DATE, nightsBetween } from '../../util/dates';
-import { validLineItem, calculateTotalFromLineItems } from '../../util/lineItems';
+import {
+  validLineItem,
+  calculateTotalFromLineItems,
+  calculateTotalForProvider,
+  calculateTotalForCustomer,
+} from '../../util/lineItems';
 import { propTypes } from '../../util/types';
 import { types as sdkTypes } from '../../util/sdkLoader';
 import config from '../../config';
@@ -135,6 +140,7 @@ export class BookingDatesFormComponent extends Component {
               : null;
 
           // Create lineItems based on booking data from the form
+          let lineItems = null;
           if (bookingData) {
             const bookingLineItem = validLineItem({
               code: 'line-item/nights',
@@ -153,7 +159,7 @@ export class BookingDatesFormComponent extends Component {
             const providerCommission = validLineItem({
               code: 'line-item/provider-commission',
               unitPrice: calculateTotalFromLineItems([bookingLineItem, cleaningFee]),
-              percentage: -10,
+              percentage: -15,
               includeFor: ['provider'],
             });
 
@@ -171,7 +177,7 @@ export class BookingDatesFormComponent extends Component {
               includeFor: ['provider'],
             });
 
-            const lineItems = [
+            lineItems = [
               bookingLineItem,
               cleaningFee,
               providerCommission,
@@ -181,6 +187,8 @@ export class BookingDatesFormComponent extends Component {
 
             console.log('LineItems', lineItems);
             console.log('Total price: ', calculateTotalFromLineItems(lineItems));
+            console.log('Customer total price: ', calculateTotalForCustomer(lineItems));
+            console.log('Provider total price: ', calculateTotalForProvider(lineItems));
           }
 
           const bookingInfo = bookingData ? (
@@ -188,7 +196,7 @@ export class BookingDatesFormComponent extends Component {
               <h3 className={css.priceBreakdownTitle}>
                 <FormattedMessage id="BookingDatesForm.priceBreakdownTitle" />
               </h3>
-              <EstimatedBreakdownMaybe bookingData={bookingData} />
+              <EstimatedBreakdownMaybe bookingData={bookingData} lineItems={lineItems} />
             </div>
           ) : null;
 

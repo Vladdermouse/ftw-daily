@@ -111,3 +111,13 @@ export const calculateTotalFromLineItems = lineItems => {
     unitPrice.currency
   );
 };
+
+export const calculateTotalForProvider = lineItems => {
+  const providerLineItems = lineItems.filter(lineItem => lineItem.includeFor.includes('provider'));
+  return calculateTotalFromLineItems(providerLineItems);
+};
+
+export const calculateTotalForCustomer = lineItems => {
+  const providerLineItems = lineItems.filter(lineItem => lineItem.includeFor.includes('customer'));
+  return calculateTotalFromLineItems(providerLineItems);
+};
